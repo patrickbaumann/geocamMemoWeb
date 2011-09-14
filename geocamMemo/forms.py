@@ -28,7 +28,7 @@ class GeolocationTimestampDateTimeFormField(forms.DateTimeField):
         except:
             raise forms.ValidationError
             
-class MemoMessageForm(AutoRevisionForm):
+class MemoMessageForm(forms.ModelForm):
     position_timestamp = GeolocationTimestampDateTimeFormField()
     class Meta:
         model = MemoMessage
