@@ -99,7 +99,10 @@ class TalkMessage(GeocamMessage):
     
     @staticmethod
     def getLargestMessageId():
-        return TalkMessage.objects.all().order_by('-pk')[0].pk
+        try:
+            return TalkMessage.objects.all().order_by('-pk')[0].pk
+        except:
+            return 0
     
     def has_audio(self):
         return bool(self.audio_file != '')   
