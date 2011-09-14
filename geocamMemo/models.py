@@ -17,8 +17,6 @@ class GeocamMessage(models.Model):
     server_timestamp = models.DateTimeField(auto_now_add = True)
     author = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_set")
     content = models.TextField(max_length=1024)
-    # removed auto_add_now from content_timestamp since revisions are also instances in the 
-    # same table and we don't overwrite this timestamp on an edit
     content_timestamp = models.DateTimeField(blank=True)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
@@ -83,7 +81,7 @@ class MemoMessage(GeocamMessage):
     def getMessages(author=None):
         """ Message Listing Rules:
         
-        If no author is specified: all messages are displayed (latest revisions)
+        If no author is specified: all messages are displayed
         If author is specified: all messages are displayed from author
         """
         

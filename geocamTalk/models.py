@@ -27,19 +27,8 @@ class TalkUserProfile(models.Model):
 User.profile = property(lambda u: TalkUserProfile.objects.get_or_create(user=u)[0])
 
 class TalkMessage(GeocamMessage):
-    """ This is the data model for Memo application messages 
+    """ This is the data model for Memo application messages """
     
-    Some of the Versioned Model API:
-        VersionedModel.get_latest_revision()
-        VersionedModel.get_revisions()
-        VersionedModel.make_current_revision()
-        VersionedModel.revert_to(criterion)
-        VersionedModel.save(new_revision=True, *vargs, **kwargs)
-        VersionedModel.show_diff_to(to, field)
-    complete API and docs are here: 
-    http://stdbrouw.github.com/django-revisions/
-
-    """
     #TODO - add time to filename location
     audio_file = models.FileField(null=True, blank=True, upload_to='geocamTalk/audio/%Y/%m/%d') #"%s-audio" % (GeocamMessage.author))
     
@@ -87,7 +76,7 @@ class TalkMessage(GeocamMessage):
     def getMessages(recipient=None, author=None):
         """ Message Listing Rules:
         
-        If no users are specified: all messages are displayed (latest revisions)
+        If no users are specified: all messages are displayed
         If only author is specified: all messages are displayed from author
         If only recipient is specified: messages displayed are broadcast + from OR to recipient
         If both recipient AND author are specified: messages displayed are braodcast + from author AND to recipient
@@ -95,17 +84,17 @@ class TalkMessage(GeocamMessage):
         Note: a broadcast message is a message with no recipients
         """
         if (recipient is None and author is None):
-            # all messages are displayed (latest revisions)    
-            messages = TalkMessage.latest.all()
+            # all messages are displayed   
+            messages = TalkMessage.objects.all()
         elif (recipient is None and author is not None):
             # messages displayed are from author:
-            messages = TalkMessage.latest.filter(author__username=author.username)   
+            messages = TalkMessage.objects.filter(author__username=author.username)   
         elif (recipient is not None and author is None):
             # messages displayed are broadcast + from OR to recipient:
-            messages = TalkMessage.latest.annotate(num_recipients=Count('recipients')).filter(Q(num_recipients=0) | Q(recipients__username=recipient.username) | Q(author__username=recipient.username)).distinct()       
+            messages = TalkMessage.objects.annotate(num_recipients=Count('recipients')).filter(Q(num_recipients=0) | Q(recipients__username=recipient.username) | Q(author__username=recipient.username)).distinct()       
         else: 
             # messages displayed are braodcast + from author AND to recipient
-            messages = TalkMessage.latest.annotate(num_recipients=Count('recipients')).filter(Q(num_recipients=0) | Q(recipients__username=recipient.username)).filter(author__username=author.username).distinct()         
+            messages = TalkMessage.objects.annotate(num_recipients=Count('recipients')).filter(Q(num_recipients=0) | Q(recipients__username=recipient.username)).filter(author__username=author.username).distinct()         
         return messages.order_by('-content_timestamp')
     
     @staticmethod

@@ -77,8 +77,6 @@ def create_message(request):
         form = MemoMessageForm(request.POST)
         if form.is_valid():
             msg = form.save(commit=False)
-            # Since revisions are now saved to db, this timestamp
-            # can't just be auto set since we want to preserve from creation time
             msg.content_timestamp = datetime.now()
             msg.save()
             return HttpResponseRedirect(reverse('memo_message_list_all'))

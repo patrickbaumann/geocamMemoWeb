@@ -5,7 +5,6 @@
 # __END_LICENSE__
 
 from django import forms
-from revisions.admin import AutoRevisionForm
 from geocamMemo.models import MemoMessage
 from datetime import datetime
 import re
